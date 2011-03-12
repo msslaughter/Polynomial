@@ -86,15 +86,39 @@ public class PolynomialLinkedA implements Polynomial
 	@Override
 	public double evaluate(double x)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		double toRet = 0.0;
+		PolyNode temp = head;
+		
+		if (head == null)
+			toRet = 0.0;
+		else
+		{
+			while (head.next != null)
+			{
+				toRet = toRet + (temp.coef * Math.pow(x, (double) temp.exp));
+				temp = temp.next;
+			}
+		}
+		return toRet;
 	}
 
-	@Override
+	/**
+	 * So I did this the short and easy way, but not necessarily the efficient way...needs work
+	 */
 	public Polynomial add(Polynomial p)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		PolynomialLinkedA toRet = this;
+		PolynomialLinkedA h = (PolynomialLinkedA) p;
+		
+		PolyNode paramCurr = h.head;
+		
+		while (paramCurr != null)
+		{
+			toRet.addCoefficient(paramCurr.coef, paramCurr.exp);
+			paramCurr = paramCurr.next;
+		}
+		
+		return toRet;
 	}
 }
 
