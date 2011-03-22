@@ -1,5 +1,9 @@
 package polynomial;
 
+import java.util.ListIterator;
+
+import polynomial.PolynomialLinkedB.PolyTerm;
+
 public class PolynomialLinkedA implements Polynomial
 {
 	//instance fields
@@ -128,21 +132,65 @@ public class PolynomialLinkedA implements Polynomial
 	/**
 	 * So I did this the short and easy way, but not necessarily the efficient way...needs work
 	 */
-	public Polynomial add(Polynomial p)
+	public Polynomial add(PolynomialLinkedA p)
 	{
-		PolynomialLinkedA toRet = this;
-		PolynomialLinkedA h = (PolynomialLinkedA) p;
-		
-		PolyNode paramCurr = h.head;
-		
-		while (paramCurr != null)
-		{
-			toRet.addCoefficient(paramCurr.coef, paramCurr.exp);
-			paramCurr = paramCurr.next;
-		}
-		
-		return toRet;
-	}
+      
+        PolynomialLinkedA toRet = new PolynomialLinkedA();
+        
+        PolyNode cTemp = head;
+        PolyNode pTemp = p.head;
+        
+        PolyNode curr = toRet.head;
+        
+        while (cTemp != null && pTemp != null)
+        {
+            if (cTemp.exp == pTemp.exp)
+            {
+                curr = new PolyNode(cTemp.coef + pTemp.coef, cTemp.exp, null);
+                cTemp = cTemp.next;
+                pTemp = pTemp.next;
+                
+                curr = curr.next;
+            }
+            
+            else if(cTemp.exp > pTemp.exp)
+            {
+                curr.next = new PolyNode(cTemp.coef, cTemp.exp, null);
+                cTemp = cTemp.next;
+                
+                curr = curr.next;   
+            }
+            
+            else
+            {
+                curr.next = new PolyNode(pTemp.coef, pTemp.exp, null);
+                pTemp = pTemp.next;
+                
+                curr = curr.next;   
+            }
+        }
+        
+        while (cTemp != null && pTemp == null)
+        {
+            curr.next = new PolyNode(cTemp.coef, cTemp.exp, null);
+            cTemp = cTemp.next;
+            
+            curr = curr.next;   
+        }
+        
+        while (cTemp == null && pTemp != null)
+        {
+            curr.next = new PolyNode(pTemp.coef, pTemp.exp, null);
+            pTemp = pTemp.next;
+            
+            curr = curr.next;  
+        }
+        
+        return toRet;
+        
+    }
+	
+	
 }
 
 class PolyNode
