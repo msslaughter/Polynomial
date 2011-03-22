@@ -3,7 +3,7 @@ package polynomial;
 public class PolynomialLinkedA implements Polynomial
 {
 	//instance fields
-	private PolyNode head;
+	protected PolyNode head;
 	
 	//constructor
 	public PolynomialLinkedA()
@@ -21,7 +21,7 @@ public class PolynomialLinkedA implements Polynomial
 			toRet = 0;
 		else
 		{
-			while(temp.exp < power)
+			while(temp.next != null && temp.exp > power)
 			{
 				temp = temp.next;
 			}
@@ -36,26 +36,35 @@ public class PolynomialLinkedA implements Polynomial
 	}
 
 	@Override
+	//TODO work out the boolean crap in the while loop...it aint workin...
 	public void setCoefficient(int coef, int power)
 	{
-		
-		PolyNode prev = head;
-		PolyNode curr = head.next;
-		
 		if (head == null)
 			head = new PolyNode(coef, power, null);
+		else if(head.exp < power)
+			head = new PolyNode(coef, power, head);
 		else
 		{
-			while(curr.exp < power)
+			PolyNode prev = head;
+			PolyNode curr = head;
+			
+			while(curr != null)
 			{
-				curr = curr.next;
-				prev = prev.next;
+				if(curr.exp > power)
+				{
+					prev = curr;
+					curr = curr.next;
+				}
+				else
+					break;
 			}
 			
-			if (curr.exp == power)
-				curr.coef = coef;
+			if (curr == null)
+			    prev.next = new PolyNode(coef, power, curr);
+			else if (curr.exp != power)
+			    prev.next = new PolyNode(coef, power, curr);
 			else
-				prev.next = new PolyNode(coef, power, curr);
+				curr.coef = coef;
 		}
 	}
 
@@ -63,24 +72,38 @@ public class PolynomialLinkedA implements Polynomial
 	public void addCoefficient(int coef, int power)
 {
 		
-		PolyNode prev = head;
-		PolyNode curr = head.next;
-		
-		if (head == null)
-			head = new PolyNode(coef, power, null);
-		else
-		{
-			while(curr.exp < power)
-			{
-				curr = curr.next;
-				prev = prev.next;
-			}
-			
-			if (curr.exp == power)
-				curr.coef = curr.coef + coef;
-			else
-				prev.next = new PolyNode(coef, power, curr);
-		}
+	    if (head == null)
+            head = new PolyNode(coef, power, null);
+        else if(head.exp < power)
+            head = new PolyNode(coef, power, head);
+        else
+        {
+            PolyNode prev = head;
+            PolyNode curr = head;
+            
+            while(curr != null)
+            {
+                if(curr.exp > power)
+                {
+                    prev = curr;
+                    curr = curr.next;
+                }
+                else
+                    break;
+            }
+            
+            if (curr == null)
+                prev.next = new PolyNode(coef, power, curr);
+            else if (curr.exp != power)
+                prev.next = new PolyNode(coef, power, curr);
+            else
+                curr.coef = curr.coef + coef;
+        }
+}
+	//TODO this method
+	public String toString()
+	{
+	    return "Mason is an idiot :( ";
 	}
 
 	@Override
@@ -93,9 +116,9 @@ public class PolynomialLinkedA implements Polynomial
 			toRet = 0.0;
 		else
 		{
-			while (head.next != null)
+			while (temp != null)
 			{
-				toRet = toRet + (temp.coef * Math.pow(x, (double) temp.exp));
+				toRet = toRet + ((double) temp.coef * Math.pow(x, (double) temp.exp));
 				temp = temp.next;
 			}
 		}
